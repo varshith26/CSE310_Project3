@@ -27,8 +27,13 @@ Graph::Graph(int numVertices, bool directed)
 {
     this->numVertices = numVertices;
     this->directed = directed;
-    
+    pi=new int[numVertices + 1];
+    key=new double[numVertices + 1];
+    ex=new int[numVertices+1];
+    discovery=new int[numVertices+1];
+    count=0;
     arr = new AdjacencyList [numVertices + 1];
+    //heap=new MinHeap(numVertices);
     for (int i = 1; i <= numVertices; ++i)
         arr[i].head = NULL;
 }
@@ -92,22 +97,24 @@ int Graph::getNumVertices(){
 // TODO: use the exact same code to find the path till a destination
 // just break the while loop at the destination
 void Graph::SSSP(int source, int destination,int flag, string command){
-    int *S=new int[numVertices],top=-1;
-    MinHeap heap(numVertices);
-    heap.insert(source, 0,flag);
     
-    int pi[numVertices + 1];
-    double key[numVertices + 1];
-    int ex[numVertices+1];
-    int count=0;
+    int *S=new int[numVertices],top=-1;
+    if(command=="find"){
+    
+    //MinHeap heap(numVertices);
+    heap=new MinHeap(numVertices);
+    heap->insert(source, 0,flag);
+    
+    
     for( int i=1; i<=numVertices; i++ ) {
         pi[i] = -1;
         key[i] = 0.0;
         ex[i]=0;
+        discovery[i]=0;
     }
     
-    while( !heap.empty() /*&& heap.getMin()!=destination*/) {
-        int u = heap.removeMin(flag);
+    while( !heap->empty() /*&& heap.getMin()!=destination*/) {
+        int u = heap->removeMin(flag);
         ex[u]=++count;
         if (u==destination)
             break;
@@ -124,11 +131,11 @@ void Graph::SSSP(int source, int destination,int flag, string command){
             if( fabs(key[v] - 0.0) < 0.01f ) {
                 key[v] = key[u] + curr->weight;
                 pi[v] = u;
-                heap.insert(v, key[v],flag);
+                heap->insert(v, key[v],flag);
             } else if( key[v] > (key[u] + curr->weight) ) {
                 key[v] = key[u] + curr->weight;
                 pi[v] = u;
-                heap.decreaseKey(v, key[v],flag);
+                heap->decreaseKey(v, key[v],flag);
                 
             }
            // cout<<pi[v]<<endl;
@@ -136,10 +143,13 @@ void Graph::SSSP(int source, int destination,int flag, string command){
             curr = curr->next;
         }
     }
+    }
     if(command=="write")
     {
-    	if(pi[destination]==-1)
+    	if(pi[destination]==-1&&heap->empty())
     		cout<<"No "<<source<<"-"<<destination<<" path exists.\n";
+    	else if(pi[destination]==-1&&!heap->empty())
+    	    cout<<"No "<<source<<"-"<<destination<<" path has been computed.\n";
     	else
     	{
     		S[++top]=destination;
@@ -150,7 +160,10 @@ void Graph::SSSP(int source, int destination,int flag, string command){
     		}
     		//S.insert(S.begin(),x);
     		
-    		cout<<"Shortest Path: <"; 
+    		if(ex[destination]!=0)
+    		    cout<<"Shortest Path: <"; 
+    		else
+    		    cout<<"Path not known to be shortest: <";
     		for(int itr=top;itr>=0;itr--)
     			cout<<S[itr]<<", ";
     		printf("\b\b>\n");

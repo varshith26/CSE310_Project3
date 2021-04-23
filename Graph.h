@@ -37,8 +37,12 @@ private:
     int numVertices;
     bool directed;
     struct AdjacencyList* arr;
-    
+    int *pi,*discovery;
+    double *key;
+    int *ex;
+    int count;
     AdjacentListNode* newAdjListNode(int id, int destination, double weight);
+    MinHeap *heap;
 
 public:
         
