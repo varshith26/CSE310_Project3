@@ -98,9 +98,10 @@ int Graph::getNumVertices(){
 // just break the while loop at the destination
 void Graph::SSSP(int source, int destination,int flag, string command){
     
-    int *S=new int[numVertices],top=-1;
-    if(command=="find"){
+    int *S=new int[numVertices+1],top=-1;
     
+    if(command=="find"){
+        free(heap);
     //MinHeap heap(numVertices);
     heap=new MinHeap(numVertices);
     heap->insert(source, 0,flag);
@@ -164,9 +165,10 @@ void Graph::SSSP(int source, int destination,int flag, string command){
     		    cout<<"Shortest Path: <"; 
     		else
     		    cout<<"Path not known to be shortest: <";
-    		for(int itr=top;itr>=0;itr--)
+    		for(int itr=top;itr>0;itr--)
     			cout<<S[itr]<<", ";
-    		printf("\b\b>\n");
+			cout<<S[0]<<">\n"
+    		//printf("\b\b>\n");
     		printf("The path weight is:%12.4lf\n",key[destination]);
     	}	
     }

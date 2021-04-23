@@ -94,7 +94,8 @@ int main(int argc, const char * argv[]) {
         if( command == "find" ) {
             
             // read source destination and flag
-            
+            source=src;
+            destination=dest;
             //cin >> source >> destination >> flag;
             cout<<"Query: "<<command<<" "<<source<<" "<<destination<<" "<<flag<<endl;
             // if not s valid query
